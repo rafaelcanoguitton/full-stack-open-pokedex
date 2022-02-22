@@ -63,8 +63,8 @@ jobs:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
   slack_success:
+    if: success()
     runs-on: ubuntu-latest
-    if: ${{ job.status == 'success' }}
     steps:
     - uses: 8398a7/action-slack@v3
       with:
@@ -73,7 +73,7 @@ jobs:
       env:
         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
   slack_failure:
-    if: ${{ job.status == 'failure' }}
+    if: failure()
     runs-on: ubuntu-latest
     steps:
     - uses: 8398a7/action-slack@v3
