@@ -62,23 +62,23 @@ jobs:
         env:
           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
         run: echo "$COMMIT_MESSAGES"
-    slack_success:
-      runs-on: ubuntu-latest
-      steps:
-      - uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          #fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest # selectable (default: repo,message)
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
-        if: ${{ job.status == 'success' }}
-    slack_failure:
-      runs-on: ubuntu-latest
-      steps:
-      - uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest # selectable (default: repo,message)
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
-        if: ${{ job.status == 'failure' }}
+  slack_success:
+    runs-on: ubuntu-latest
+    if: ${{ job.status == 'success' }}
+    steps:
+    - uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        #fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest # selectable (default: repo,message)
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+  slack_failure:
+    if: ${{ job.status == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        fields: repo,message,commit,author,action,eventName,ref,workflow,job,took,pullRequest # selectable (default: repo,message)
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
